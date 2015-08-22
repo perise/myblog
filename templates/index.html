@@ -10,22 +10,19 @@
         <p><input type='submit' value="提交"/></p>
     </form>
 
+    {% if contents %}
     <table border="2">
-    <tr>
-        {% if titles %}
-            {% for title in titles %}
-                <th>{{ title }} </th>
-            {% endfor %}
-        {% endif %}
-    </tr>
-    <tr>
-        {% if contents %}
-            {% for content in contents %}
-                <td> {{ content }}</td>
-            {% endfor %}
-        {% endif %}
-    </tr>
+        <tr>
+                {% for content in contents %}
+                    <tr>
+                        <th> {{ titles[loop.index] }}</th>
+                        <td> {{ content }}</td>
+                    </tr>
+                {% endfor %}
+        </tr>
     </table>
+    {% endif %}
+
 </body>
 </html>
 
