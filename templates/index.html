@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+</head>
+<body>
+    <form action="." method="post">
+        <p>股票代码:<input type="text" name="StockCode"></p>
+        <p><input type='submit' value="提交"/></p>
+    </form>
+
+    <table border="2">
+    <tr>
+        {% if titles %}
+            {% for title in titles %}
+                <th>{{ title }} </th>
+            {% endfor %}
+        {% endif %}
+    </tr>
+    <tr>
+        {% if contents %}
+            {% for content in contents %}
+                <td> {{ content }}</td>
+            {% endfor %}
+        {% endif %}
+    </tr>
+    </table>
+</body>
+</html>
+
