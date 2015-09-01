@@ -5,8 +5,8 @@
     <title></title>
 </head>
 <body>
-    <form action="." method="post">
-        <p>股票代码:<input type="text" name="StockCode"></p>
+    <form method="POST" action=".">
+        <div>{{ form.stockcode.label }}: {{ form.stockcode }}</div>
         <p><input type='submit' value="提交"/></p>
     </form>
 
