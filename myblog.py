@@ -1,19 +1,29 @@
 # This Python file uses the following encoding: utf-8
 
-from flask import Flask, render_template, request
+from flask import Flask, render_template, request, session
 from StockInfo import StockInfo
 from flask_debugtoolbar import DebugToolbarExtension
 from wtforms import Form, StringField, validators
-import string
+from wtforms.csrf.session import SessionCSRF
 
 app = Flask(__name__)
 # configure your application before initializing any extensions
 app.debug = True
-app.config['SECRET_KEY'] = 'secret'  # required for session cookies to work
+app.config['SECRET_KEY'] = 'security'
+app.config['CSRF_SECRET_KEY'] = 'pleasedonttellanyone'  # required for session cookies to work
 app.config['DEBUG_TB_TEMPLATE_EDITOR_ENABLED'] = True
 toolbar = DebugToolbarExtension(app)
 
 
+
+class CSRFEnabledForm(Form):
+    class Meta:
+        csrf = True
+        csrf_class = SessionCSRF
+        csrf_secret = app.config['CSRF_SECRET_KEY']
+        @property
+        def csrf_context(self):
+            return session
 
 @app.route('/')
 def hello_world():
@@ -25,12 +35,12 @@ def stockcodecheck():
             raise validators.ValidationError('Field must equal to six digital number')
     return _stockcodecheck
 
-class LoginForm(Form):
+class LoginForm(CSRFEnabledForm):
     stockcode = StringField(u'股票代码', [validators.input_required(), stockcodecheck()])
 
 
 
-@app.route('/search', methods=['GET', 'POST'])
+@app.route('/search/', methods=['GET', 'POST'])
 def hello_good():
     titles = [u'股票名称',
         u'今开盘', u'昨收盘',

@@ -6,6 +6,10 @@
 </head>
 <body>
     <form method="POST" action=".">
+        {{ form.csrf_token }}
+        {% if form.csrf_token.errors %}
+            <div class="warning">You have submitted an invalid CSRF token</div>
+        {% endif %}
         <div>{{ form.stockcode.label }}: {{ form.stockcode }}</div>
         <p><input type='submit' value="提交"/></p>
     </form>
