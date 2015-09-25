@@ -9,8 +9,8 @@ from wtforms.csrf.session import SessionCSRF
 app = Flask(__name__)
 # configure your application before initializing any extensions
 app.debug = True
-app.config['SECRET_KEY'] = 'security'
-app.config['CSRF_SECRET_KEY'] = 'pleasedonttellanyone'  # required for session cookies to work
+app.config['SECRET_KEY'] = b'security'
+app.config['CSRF_SECRET_KEY'] = b'pleasedonttellanyone'  # required for session cookies to work
 app.config['DEBUG_TB_TEMPLATE_EDITOR_ENABLED'] = True
 toolbar = DebugToolbarExtension(app)
 
@@ -31,12 +31,14 @@ def hello_world():
 
 def stockcodecheck():
     def _stockcodecheck(form, field):
-        if not str.isdigit(field.data.encode("ascii")) or len(field.data.encode("ascii")) is not 6:
+        if not str.isdigit(field.data.encode("ascii").decode()) or len(field.data.encode("ascii").decode()) is not 6:
             raise validators.ValidationError('Field must equal to six digital number')
     return _stockcodecheck
 
 class LoginForm(CSRFEnabledForm):
-    stockcode = StringField(u'股票代码', [validators.input_required(), stockcodecheck()])
+    #stockcode = StringField(u'股票代码', [validators.input_required(), stockcodecheck()])
+    print("LoginForm")
+    stockcode = StringField(u'code', [validators.input_required(), stockcodecheck()])
 
 
 
@@ -50,11 +52,14 @@ def hello_good():
         u'买一', u'买一价', u'买二', u'买二价', u'买三', u'买三价', u'买四', u'买四价', u'买五', u'买五价',
         u'卖一', u'卖一价', u'卖二', u'卖二价', u'卖三', u'卖三价', u'卖四', u'卖四价', u'卖五', u'卖五价',
         u'日期', u'时间']
+
     form = LoginForm(request.form)
     if request.method == 'POST' and form.validate():
         stock = StockInfo(form.stockcode.data)
-        contents = stock.getInfo().split(",")
-        del contents[-1]
+        rawInfo = stock.getInfo()
+        if rawInfo:
+            contents = rawInfo.split(",")
+            del contents[-1]
 
         if contents:
             return render_template("index.html", titles=titles, contents=contents, form=form)
