@@ -1,4 +1,4 @@
-its an example for my flask learning
+it is an example for my flask learning, bases on python3 now
 
 ## create database connection
 * which database?
